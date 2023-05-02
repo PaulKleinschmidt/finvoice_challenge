@@ -1,24 +1,25 @@
-# README
+# Finvoice Code Challenge
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+The repo contains my submission to the Finvoice Rails API code challenge.
 
-Things you may want to cover:
+## Requirements
 
-* Ruby version
+- Ruby version 2.7.0 or later
 
-* System dependencies
+## Quick Start
 
-* Configuration
+Run the following commands to run the project locally
 
-* Database creation
+```
+bundle install
+rails s
+```
 
-* Database initialization
+## Tests
 
-* How to run the test suite
+Run `rspec` in the project root to run the test suite. I used the following gems to help with writing tests:
 
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+- factory_bot_rails
+- rails-controller-testing
+- shoulda-matchers
+- faker
