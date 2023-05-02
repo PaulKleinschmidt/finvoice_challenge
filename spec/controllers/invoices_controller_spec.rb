@@ -20,7 +20,7 @@ RSpec.describe InvoicesController, type: :controller do
         amount: 1000,
         due_date: Date.today + 30.days,
         invoice_scan: 'abc123',
-        client_id: client.id,
+        client_id: client.id
       }
     end
 
