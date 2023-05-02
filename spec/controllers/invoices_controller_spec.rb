@@ -20,6 +20,7 @@ RSpec.describe InvoicesController, type: :controller do
         amount: 1000,
         due_date: Date.today + 30.days,
         invoice_scan: 'abc123',
+        fee_percentage: 50,
         client_id: client.id
       }
     end
@@ -34,8 +35,8 @@ RSpec.describe InvoicesController, type: :controller do
 
   describe '#update' do
     let(:invoice) { FactoryBot.create :invoice }
-    let(:approved_invoice) { FactoryBot.create(:invoice, status: :approved, amount: 10) }
-    let(:purchased_invoice) { FactoryBot.create(:invoice, status: :purchased, amount: 10) }
+    let(:approved_invoice) { FactoryBot.create(:invoice, status: :approved, amount: 10, fee_percentage: 10) }
+    let(:purchased_invoice) { FactoryBot.create(:invoice, status: :purchased, amount: 10, fee_percentage: 10) }
     let!(:fee) { FactoryBot.create(:fee, invoice: purchased_invoice) }
 
     it 'should update the status if status change is valid' do

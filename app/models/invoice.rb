@@ -1,5 +1,5 @@
 class Invoice < ApplicationRecord
-  validates :invoice_id, :amount, :due_date, :status, :invoice_scan, presence: true
+  validates :invoice_id, :amount, :due_date, :status, :invoice_scan, :fee_percentage, presence: true
   validates :invoice_id, uniqueness: true
 
   enum :status, { created: 0, approved: 1, purchased: 2, closed: 3, rejected: 4 }
@@ -22,7 +22,9 @@ class Invoice < ApplicationRecord
   end
 
   def create_fee
-    Fee.create(invoice: self, amount: amount * fee_percentage, purchase_date: Date.current)
+    fee = amount * (fee_percentage / 100.0)
+
+    Fee.create(invoice: self, amount: fee, purchase_date: Date.current)
   end
 
   def update_fee_end_date
@@ -30,10 +32,6 @@ class Invoice < ApplicationRecord
   end
 
   private
-
-  def fee_percentage
-    0.10
-  end
 
   def valid_status_transition?(old_status, new_status)
     case old_status

@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Invoice, type: :model do
   let(:created_invoice) { FactoryBot.create(:invoice, status: :created) }
   let(:created_invoice2) { FactoryBot.create(:invoice, status: :created) }
-  let(:approved_invoice) { FactoryBot.create(:invoice, status: :approved) }
+  let(:approved_invoice) { FactoryBot.create(:invoice, status: :approved, amount: 10, fee_percentage: 10) }
   let(:purchased_invoice) { FactoryBot.create(:invoice, status: :purchased) }
   let(:closed_invoice) { FactoryBot.create(:invoice, status: :closed) }
   let!(:fee) { FactoryBot.create(:fee, invoice: purchased_invoice) }
@@ -14,6 +14,7 @@ RSpec.describe Invoice, type: :model do
     it { should validate_presence_of(:invoice_scan) }
     it { should validate_presence_of(:status) }
     it { should validate_presence_of(:due_date) }
+    it { should validate_presence_of(:fee_percentage) }
   end
 
   describe 'before_update' do
@@ -48,7 +49,7 @@ RSpec.describe Invoice, type: :model do
         invoice_id: invoice.id,
         purchase_date: Date.current,
         end_date: nil,
-        amount: invoice.amount * 0.10
+        amount: 1.0
       )
     end
 

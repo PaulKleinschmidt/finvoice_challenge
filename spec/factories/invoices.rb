@@ -5,5 +5,6 @@ FactoryBot.define do
     due_date { Faker::Time.between(from: 2.days.ago, to: Time.now) }
     invoice_scan { Faker::Alphanumeric.alpha(number: 10) }
     association :client
+    fee_percentage { Faker::Number.between(from: 1, to: 100) }
   end
 end
