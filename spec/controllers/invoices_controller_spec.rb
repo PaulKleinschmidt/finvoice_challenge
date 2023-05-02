@@ -12,11 +12,12 @@ RSpec.describe InvoicesController, type: :controller do
   end
 
   describe '#create' do
+    let!(:invoice) { FactoryBot.create :invoice }
     let(:client) { FactoryBot.create :client }
-
+    let(:invoice_id) { 'INV001' }
     let(:new_invoice_params) do
       {
-        invoice_id: 'INV001',
+        invoice_id: invoice_id,
         amount: 1000,
         due_date: Date.today + 30.days,
         invoice_scan: 'abc123',
@@ -30,6 +31,16 @@ RSpec.describe InvoicesController, type: :controller do
       expect(response).to be_successful
       expect(assigns(:invoice)).to be_persisted
       expect(assigns(:invoice).status).to eq('created')
+    end
+
+    describe 'with an already used invoice_id' do
+      let(:invoice_id) { invoice.invoice_id }
+
+      it 'should fail' do
+        post :create, params: { invoice: new_invoice_params }
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.body).to include('{"invoice_id":["has already been taken"]}')
+      end
     end
   end
 
