@@ -17,12 +17,15 @@ rails s
 
 ## Tests
 
-Run `rspec` in the project root to run the test suite. I used the following gems to help with writing tests:
+The following gems are used to to help with writing tests:
 
+- rspec
 - factory_bot_rails
 - rails-controller-testing
 - shoulda-matchers
 - faker
+
+Run `rspec` in the project root to run the test suite.
 
 I prioritized writing tests for the Invoice model and controller, as they contain the core application logic. However, if given more time, I would add tests for all the remaining routes and models.
 
@@ -61,3 +64,11 @@ All standard CRUD routes are available for each of the resources
 - end_date (date): the date at which the invoice was closed (i.e status changed to "closed")
 - created_at (datetime): timestamp for when the record was created
 - updated_at (datetime): timestamp for when the record was last updated
+
+### Features
+
+- ✅ Users can create clients and invoices
+- ✅ Users can make valid status updates to invoices
+- ✅ Users are not allowed to make invalid status updates
+- ✅ Fees are created when an invoice status changes to "purchased"
+- ✅ Fees are updated to have an end date when their associated invoice status is changed to "closed"
