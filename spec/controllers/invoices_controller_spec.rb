@@ -34,6 +34,9 @@ RSpec.describe InvoicesController, type: :controller do
 
   describe '#update' do
     let(:invoice) { FactoryBot.create :invoice }
+    let(:approved_invoice) { FactoryBot.create(:invoice, status: :approved, amount: 10) }
+    let(:purchased_invoice) { FactoryBot.create(:invoice, status: :purchased, amount: 10) }
+    let!(:fee) { FactoryBot.create(:fee, invoice: purchased_invoice) }
 
     it 'should update the status if status change is valid' do
       put :update, params: { id: invoice.id, invoice: { status: :rejected } }
@@ -45,6 +48,28 @@ RSpec.describe InvoicesController, type: :controller do
       put :update, params: { id: invoice.id, invoice: { status: 'purchased' } }
       expect(response).to have_http_status(:unprocessable_entity)
       expect(response.body).to include("can't transition from created to purchased")
+    end
+
+    it 'create a new fee if the status is changed to purchased' do
+      put :update, params: { id: approved_invoice.id, invoice: { status: :purchased } }
+      expect(response).to be_successful
+      expect(Fee.last).to have_attributes(
+        invoice_id: approved_invoice.id,
+        purchase_date: Date.current,
+        end_date: nil,
+        amount: 1.0
+      )
+      expect(assigns(:invoice).status).to eq('purchased')
+    end
+
+    it 'updates the fee end_date if the status is changed to closed' do
+      put :update, params: { id: purchased_invoice.id, invoice: { status: :closed } }
+      expect(response).to be_successful
+      expect(Fee.last).to have_attributes(
+        invoice_id: purchased_invoice.id,
+        end_date: Date.current
+      )
+      expect(assigns(:invoice).status).to eq('closed')
     end
   end
 end
