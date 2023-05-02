@@ -1,7 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Invoice, type: :model do
-  let(:invoice) { FactoryBot.build(:invoice) }
+  let(:created_invoice) { FactoryBot.create(:invoice, status: :created) }
+  let(:created_invoice2) { FactoryBot.create(:invoice, status: :created) }
   let(:approved_invoice) { FactoryBot.create(:invoice, status: :approved) }
   let(:purchased_invoice) { FactoryBot.create(:invoice, status: :purchased) }
   let(:closed_invoice) { FactoryBot.create(:invoice, status: :closed) }
@@ -17,21 +18,24 @@ RSpec.describe Invoice, type: :model do
 
   describe 'before_update' do
     it 'does not allow invalid status transitions' do
-      invoice.status = :created
-      invoice.save
-
       expect do
-        invoice.update!(status: :closed)
+        created_invoice.update!(status: :closed)
       end.to raise_error(ActiveRecord::RecordInvalid)
     end
 
     it 'allows valid status transitions' do
-      invoice.status = :created
-      invoice.save
+      invoice = created_invoice
+      invoice.update!(status: :approved)
+      expect(invoice.reload.status).to eq('approved')
 
-      expect do
-        invoice.update(status: :approved)
-      end.to_not raise_error
+      invoice.update!(status: :purchased)
+      expect(invoice.reload.status).to eq('purchased')
+
+      invoice.update!(status: :closed)
+      expect(invoice.reload.status).to eq('closed')
+
+      created_invoice2.update!(status: :rejected)
+      expect(created_invoice2.reload.status).to eq('rejected')
     end
 
     it 'creates a new fee if the status is changed to purchased' do
