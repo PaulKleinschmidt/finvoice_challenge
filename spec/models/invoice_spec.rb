@@ -11,7 +11,7 @@ RSpec.describe Invoice, type: :model do
     it { should validate_presence_of(:due_date) }
   end
 
-  describe 'status transitions' do
+  describe 'before_update' do
     it 'does not allow invalid status transitions' do
       invoice.status = :created
       invoice.save
