@@ -1,6 +1,7 @@
 class Invoice < ApplicationRecord
   before_update :check_status_transition
-
+  validates :invoice_id, :amount, :due_date, :status, :invoice_scan, presence: true
+  validates :invoice_id, uniqueness: true
   belongs_to :client
   enum :status, { created: 0, approved: 1, purchased: 2, closed: 3, rejected: 4 }
 
@@ -12,7 +13,7 @@ class Invoice < ApplicationRecord
     return if valid_status_transition?(old_status, new_status)
 
     errors.add(:status, "can't transition from #{old_status} to #{new_status}")
-    throw :abort
+    raise ActiveRecord::RecordInvalid
   end
 
   private
